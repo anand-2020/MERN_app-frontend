@@ -1,34 +1,19 @@
 import React, { Component } from 'react';
-import { Router, NavLink, Route } from 'react-router-dom';
-import axios from 'axios';
+import { NavLink } from 'react-router-dom';
+import AuthContext from './../../context/auth-context';
 import './Header.css'
+import image from './../../asset/appheader.jpg';
+
 
 class Header extends Component {
-  state = {
-    isLoggedIn : false,
-    currentUser : null
-  }
-   
-  isLoginHandler = () => {
-    
-    axios.get('http://127.0.0.1:5050/user/isLoggedIn', {withCredentials:true})
-         .then(response => {
-             console.log(response);
-             this.setState({isLoggedIn:true, currentUser:response.data.data.user});
-         })
-         .catch(error => {
-             console.log(error);
-         });
-}
-
-  componentDidMount () {
-    this.isLoginHandler();
-  }
+  static contextType=AuthContext;
 
   render() {
     return (
       <div className="Header">
-        <h2>{this.state.isLoggedIn}</h2>
+        <div>
+        <img src={image} alt="mainphoto"className="myimg" />
+        </div>
         <nav>
             <ul>
                 <li><NavLink
@@ -39,14 +24,24 @@ class Header extends Component {
                                     color: '#fa923f',
                                     textDecoration: 'underline'
                                 }}>Posts</NavLink></li>
-                 <li><NavLink to={{
+                 {this.context.authenticated?<li><NavLink to={{
                                 pathname: '/addpost',
                                 hash: '#submit'
-                            }}>Add Post</NavLink></li>
-                            <li><NavLink to={{
+                            }}>Add Post</NavLink></li>:null}
+                 {!this.context.authenticated?<li><NavLink to={{
                                 pathname: '/login',
                                 hash: '#submit'
-                            }}>Login/Logout</NavLink></li>
+                            }}>Login</NavLink></li>:
+                            <li><NavLink to={{
+                              pathname: '/logout',
+                              hash: '#submit'
+                          }}>Logout</NavLink></li>}
+                    {this.context.authenticated?<li><NavLink to={{
+                                pathname: '/user/myPosts'
+                            }}>MY POSTS</NavLink></li>:null}
+                   {!this.context.authenticated?<li><NavLink to={{
+                                pathname: '/user/signup'
+                            }}>SignUp</NavLink></li>:null}         
             </ul>
         </nav>
       </div>

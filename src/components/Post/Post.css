@@ -1,12 +1,13 @@
 .Post {
-    width: 100px;
+    width: 80%;
     padding: 16px;
     text-align: center;
     border: 1px solid #eee;
     box-shadow: 0 2px 3px #ccc;
     margin: 10px;
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
     cursor: pointer;
+    display:block;
 }
 
 .Post:hover,
@@ -17,4 +18,8 @@
 .Author {
     margin: 16px 0;
     color: #ccc;
+}
+
+.Blacklist {
+    background-color: red;
 }
