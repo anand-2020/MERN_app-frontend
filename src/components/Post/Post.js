@@ -4,7 +4,7 @@ import './Post.css';
 
 class Post extends Component { 
     state ={
-        like:false, dislike:false, upVote:this.props.upVote, downVote:this.props.downVote
+        like:false, dislike:false, upVote:this.props.upVote, downVote:this.props.downVote, blacklist:this.props.blacklist
     }
 
     componentDidMount() {
@@ -55,6 +55,15 @@ class Post extends Component {
          }
     }
 
+    blacklistHandler = () => {
+        const blacklist = !this.state.blacklist;
+        axios.patch(`http://127.0.0.1:5050/post/${this.props.id}`, {blacklist:blacklist}, {withCredentials:true})
+        .then( res => {
+            this.setState({blacklist:res.data.data.post.blacklist}); 
+            console.log(res);})
+        .catch(err => {console.log(err.response.data);});    
+    }
+
     render(){
     return(
     <article className="Post">
@@ -65,6 +74,8 @@ class Post extends Component {
         <button onClick={() => this.reactionHandler('downVote')} >DISLIKE</button>  <p>{this.state.downVote} </p>
          {this.props.review? <p>{this.props.review}</p>:null}
         </div>
+      {this.props.delete? <button onClick={this.props.delete} >DELETE</button>:null}
+      {this.props.blacklistAllowed? <button onClick={this.blacklistHandler}>BLACKLIST</button>:null}
     </article>
    );
  }

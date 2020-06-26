@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { Route} from 'react-router-dom';
-
-import MyPost from '../../components/Post/MyPost';
 import Post from '../../components/Post/Post';
 import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
@@ -11,6 +9,7 @@ import Login from './../Auth/Login';
 import Logout from './../Auth/Logout';
 import SignUp from './../Auth/SignUp';
 import AuthContext from './../../context/auth-context';
+import Users from './../../components/Users/Users/Users';
 
 class Blog extends Component {
     
@@ -28,7 +27,7 @@ class Blog extends Component {
     }
     checkHandler = () => {
         console.log('hi there');
-        console.log(this.props);
+        console.log(this.state.posts);
     }
 
     postDeleteHandler = (id) => {
@@ -48,28 +47,26 @@ class Blog extends Component {
 
     render () {
         this.checkHandler();
+        let posts=[],myposts=[];
 
-        const posts = this.state.posts.map(post => {  
-            if(!post.blacklist){
+            this.state.posts.forEach(post => {  
             let likes=0, dislikes=0, match=false, review;
-            if(post.rxn){ post.rxn.forEach(el => {
-             if(!match && this.context.currentUser && (JSON.stringify(el.user) === JSON.stringify(this.context.currentUser._id)))
-             {match=true; review=el.review; }   
-             if(el.review === 'upVote') likes++;
-             else if(el.review === 'downVote') dislikes++;
-             else ;
-            }); }
-            return <Post key={post._id} author={post.author} content={post.content} id={post._id}
-                         upVote={likes} downVote={dislikes} review={review} />
-        } else return null;}) 
+            if(post.rxn){ 
+                post.rxn.forEach(el => {
+                   if(!match && this.context.currentUser && (JSON.stringify(el.user) === JSON.stringify(this.context.currentUser._id)))
+                   {match=true; review=el.review; }   
+                   if(el.review === 'upVote') likes++;
+                   else if(el.review === 'downVote') dislikes++;
+                    else ;
+                }); 
+            }
+             const doc = <Post key={post._id} author={post.author} content={post.content} id={post._id}
+                                    upVote={likes} downVote={dislikes} review={review} blacklist={post.blacklist}
+                                    delete={this.context.currentUser.username===post.author?() => this.postDeleteHandler(post._id):null}/>;
+             if(!post.blacklist) posts.push(doc);
+             if(this.context.authenticated && this.context.currentUser.username===post.author) myposts.push(doc);                      
+        }) ;
         
-        
-        let myposts = null;
-        if(this.context.authenticated) {
-           myposts = this.state.posts.map(post => { if(post.author === this.context.currentUser.username)
-                return <MyPost key={post._id} author={post.author} content={post.content} blacklist={post.blacklist}
-                             delete={() => this.postDeleteHandler(post._id)}/>; else return null; }); 
-        }
 
         let addpost = <NewPost add={this.addPostHandler}/>;
         return (
@@ -79,8 +76,9 @@ class Blog extends Component {
                 <Route path="/addpost" exact render={() => addpost} />
                 <Route path="/login" exact component={Login} />
                 <Route path="/logout" exact component={Logout} />
-                <Route path='/user/myPosts' exact render={() => myposts }/>
+                <Route path="/user/myPosts" exact render={() => myposts }/>
                 <Route path='/user/signup' exact component={SignUp}/>
+                <Route path='/user' exact component={Users}/>
             </div>
         );
     }

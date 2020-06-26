@@ -41,7 +41,10 @@ class Header extends Component {
                             }}>MY POSTS</NavLink></li>:null}
                    {!this.context.authenticated?<li><NavLink to={{
                                 pathname: '/user/signup'
-                            }}>SignUp</NavLink></li>:null}         
+                            }}>SignUp</NavLink></li>:null}
+                    {(this.context.authenticated && this.context.currentUser.role === 'admin')?<li><NavLink to={{
+                                pathname: '/user'
+                            }}>Users</NavLink></li>:null}                       
             </ul>
         </nav>
       </div>
