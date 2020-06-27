@@ -29,8 +29,7 @@ class Header extends Component {
                                 hash: '#submit'
                             }}>Add Post</NavLink></li>:null}
                  {!this.context.authenticated?<li><NavLink to={{
-                                pathname: '/login',
-                                hash: '#submit'
+                                pathname: '/login'
                             }}>Login</NavLink></li>:
                             <li><NavLink to={{
                               pathname: '/logout',

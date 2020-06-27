@@ -10,6 +10,7 @@ import Logout from './../Auth/Logout';
 import SignUp from './../Auth/SignUp';
 import AuthContext from './../../context/auth-context';
 import Users from './../../components/Users/Users/Users';
+import ForgotPass from '../Auth/ForgotPass';
 
 class Blog extends Component {
     
@@ -62,7 +63,7 @@ class Blog extends Component {
             }
              const doc = <Post key={post._id} author={post.author} content={post.content} id={post._id}
                                     upVote={likes} downVote={dislikes} review={review} blacklist={post.blacklist}
-                                    delete={this.context.currentUser.username===post.author?() => this.postDeleteHandler(post._id):null}/>;
+                                    delete={ this.context.authenticated && this.context.currentUser.username===post.author?() => this.postDeleteHandler(post._id):null}/>;
              if(!post.blacklist) posts.push(doc);
              if(this.context.authenticated && this.context.currentUser.username===post.author) myposts.push(doc);                      
         }) ;
@@ -75,6 +76,7 @@ class Blog extends Component {
                 <Route path="/post" exact render={() => posts } />
                 <Route path="/addpost" exact render={() => addpost} />
                 <Route path="/login" exact component={Login} />
+                <Route path="/forgotPassword" exact component={ForgotPass} />
                 <Route path="/logout" exact component={Logout} />
                 <Route path="/user/myPosts" exact render={() => myposts }/>
                 <Route path='/user/signup' exact component={SignUp}/>
