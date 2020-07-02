@@ -1,49 +1,57 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from './../../context/auth-context';
-import './Header.css'
-import image from './../../asset/appheader.jpg';
-
+import './Header.css';
+import axios from 'axios';
 
 class Header extends Component {
   static contextType=AuthContext;
+  logoutHandler = () => {
+      
+      axios.get('http://127.0.0.1:5050/user/logout', {withCredentials:true})
+           .then(response => {
+               this.context.login();
+           })
+           .catch(error => {
+               console.log(error);
+           });
+  }
 
   render() {
     return (
       <div className="Header">
-        <div>
-        <img src={image} alt="mainphoto"className="myimg" />
-        </div>
+         <div className="PP">PostPlay</div> 
         <nav>
             <ul>
                 <li><NavLink
                                 to="/post/"
                                 exact
-                                activeClassName="my-active"
-                                activeStyle={{
-                                    color: '#fa923f',
-                                    textDecoration: 'underline'
-                                }}>Posts</NavLink></li>
-                 {this.context.authenticated?<li><NavLink to={{
+                                >Posts</NavLink></li>
+                 {<li><NavLink to={{
                                 pathname: '/addpost',
                                 hash: '#submit'
-                            }}>Add Post</NavLink></li>:null}
+                            }}>Add_Post</NavLink></li>}
+                 {this.context.authenticated?<li><NavLink to={{
+                                pathname: '/user/myPosts'
+                            }}>My_Posts</NavLink></li>:null}
+                  {this.context.authenticated ?<li><NavLink to={{
+                                pathname: '/user/profile'
+                            }}>Profile</NavLink></li>:null} 
                  {!this.context.authenticated?<li><NavLink to={{
                                 pathname: '/login'
                             }}>Login</NavLink></li>:
-                            <li><NavLink to={{
-                              pathname: '/logout',
-                              hash: '#submit'
-                          }}>Logout</NavLink></li>}
-                    {this.context.authenticated?<li><NavLink to={{
-                                pathname: '/user/myPosts'
-                            }}>MY POSTS</NavLink></li>:null}
+                           <button className="Out" onClick={this.logoutHandler}>Logout</button>}
                    {!this.context.authenticated?<li><NavLink to={{
                                 pathname: '/user/signup'
                             }}>SignUp</NavLink></li>:null}
                     {(this.context.authenticated && this.context.currentUser.role === 'admin')?<li><NavLink to={{
-                                pathname: '/user'
-                            }}>Users</NavLink></li>:null}                       
+                                pathname: '/user' 
+                            }} exact>Users</NavLink></li>:null} 
+                 
+                     {this.context.authenticated ?<li><NavLink to={{
+                                pathname: '/user/changePassword'
+                            }}>Change_Password</NavLink></li>:null}
+                         
             </ul>
         </nav>
       </div>
