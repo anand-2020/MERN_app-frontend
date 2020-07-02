@@ -2,27 +2,39 @@ import React,{Component} from 'react';
 import axios from 'axios';
 import AuthContext from './../../../context/auth-context'
 import './User.css';
-import button from '../../UI/Button/Button';
+import icon from './../../../asset/usericons.jpg'
 
 class User extends Component {
     state = {
-        role:this.props.role, blacklist:this.props.blacklist
+        role:this.props.role, blacklist:this.props.blacklist, changing:false
     }
 
     static contextType=AuthContext;
+    
+    componentDidMount(){
+        this.mounted=true;
+    }
+
+    componentWillUnmount(){
+        this.mounted=false;
+    }
+
 
     blacklistHandler = () => {
+        if(!this.state.changing){
         const blacklist = !this.state.blacklist;
         const username = this.props.username;
+        this.setState({changing:true});
         axios.patch('http://127.0.0.1:5050/user/'+this.props.id, {username,blacklist}, {withCredentials:true})
              .then(response => {
-                 this.setState({blacklist:response.data.data.user.blacklist});
-                 console.log(response);
+                 if(this.mounted) {this.setState({blacklist:response.data.data.user.blacklist, changing:false});}
+                
              })
              .catch(error => {
-                 console.log(error);
+                 console.log(error); if(this.mounted){ this.setState({changing:false}); }
                 // window.alert('Access Denied!');
              });
+            }
     }
     changeRoleHandler = () => {
         let role;
@@ -30,8 +42,8 @@ class User extends Component {
         else role='user';
         axios.patch('http://127.0.0.1:5050/user/'+this.props.id, {role}, {withCredentials:true})
              .then(response => {
-                 this.setState({role:response.data.data.user.role});
-                 console.log(response);
+                if(this.mounted){ this.setState({role:response.data.data.user.role}); }
+                 
              })
              .catch(error => {
                  console.log(error);
@@ -40,14 +52,20 @@ class User extends Component {
     }
 
     render () {
-
+        var localDate = new Date(this.props.lastLogin) ;
+        
+        const ist=[localDate.getDate(),"-", localDate.getMonth(),"-", localDate.getFullYear(),"  ", localDate.getHours(),":", localDate.getMinutes()];
+          
         return (
-             <div>
+             <div className="User" >
+                 <img src={icon} alt='usericon' />
                 <h1>{this.props.username}</h1>
                 <h4>{this.state.role}</h4>
-                <button onClick={() =>this.blacklistHandler()}>BLACKLIST</button> 
-                <button onClick={() =>this.changeRoleHandler()}>Change Role</button> 
-                <button onClick={this.props.getPosts}>Posts</button>
+                <p>E-Mail : {this.props.email}</p>
+                <p>Last Login : {ist} </p>
+                <button className={this.state.blacklist?"UserBlacklist UserButton":"UserButton"} onClick={() =>this.blacklistHandler()}>Blacklist</button> 
+                <button className="UserButton" onClick={() =>this.changeRoleHandler()}>Change Role</button> 
+                <button className="UserButton" onClick={this.props.getPosts}>Posts</button>
              </div> 
         );
     }
