@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import AuthContext from './../../context/auth-context';
 import Button from './../../components/UI/Button/Button';
 import Spinner from './../../components/UI/Spinner/Spinner';
 import './SignUp.css';
 import axios from 'axios';
 import Input from './../../components/UI/Input/Input';
+import withErrorHandler from './../../hoc/withErrorHandler';
+import Aux from './../../hoc/auxilary';
 
 class Login extends Component {
     static contextType=AuthContext;
-    state = {
+    state = { 
         form: {
             email: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'email',
-                    placeholder: 'Your E-Mail'
+                    placeholder: 'E-Mail'
                 },
                 value: '',
                 validation: {
@@ -28,7 +31,7 @@ class Login extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'password',
-                    placeholder: 'Enter Password'
+                    placeholder: 'Password'
                 },
                 value: '',
                 validation: {
@@ -42,7 +45,9 @@ class Login extends Component {
         formIsValid: false,
         loading: false
     }
+  
 
+   
     submitHandler = ( event ) => {
         event.preventDefault();
         this.setState( { loading: true } );
@@ -53,14 +58,14 @@ class Login extends Component {
         const data = formData;
         axios.post( 'http://127.0.0.1:5050/user/login', data, {withCredentials:true} )
             .then( response => {
-                console.log(response);
+                
                 this.context.login(response.data.data.user);
                 this.setState( { loading: false } );
-                this.props.history.push( '/post' );
+                this.props.history.push( '/post' );  
             } )
             .catch( error => {
-                console.log(error.response.data);
-                this.setState( { loading: false } );
+                console.log(error);
+               this.setState( { loading: false } ); 
             } );
     }
 
@@ -132,13 +137,21 @@ class Login extends Component {
         if ( this.state.loading ) {
             form = <Spinner />;
         }
+
         return (
-            <div className="ContactData">
-                <h4>Login</h4>
+            <Aux>
+                {this.context.authenticated?<h2>You are logged in</h2>:
+            <div className="Contact">
+                <h2>Login</h2>
                 {form}
-            </div>
+              {!this.state.loading?
+              <NavLink className="Resend" to={{pathname:'/forgotPassword'}}>  
+                 Forgot Password ?
+              </NavLink>:null}
+            </div>}
+        </Aux>
         );
     }
 }
 
-export default Login;
+export default withErrorHandler(Login,axios);

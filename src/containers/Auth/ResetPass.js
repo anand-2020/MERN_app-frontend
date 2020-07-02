@@ -4,6 +4,7 @@ import Spinner from './../../components/UI/Spinner/Spinner';
 import './SignUp.css';
 import axios from 'axios';
 import Input from './../../components/UI/Input/Input';
+import withErrorHandler from './../../hoc/withErrorHandler';
 
 class ResetPass extends Component {
       state = { 
@@ -12,7 +13,7 @@ class ResetPass extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'Enter the OTP ',
+                    placeholder: 'OTP',
                 },
                 value: '',
                 validation: {
@@ -41,7 +42,7 @@ class ResetPass extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'password',
-                    placeholder: 'Confirm new Password',
+                    placeholder: 'Confirm New Password',
                     msg:`Passwords don't match!` },
                 value: '',
                 validation: {
@@ -55,6 +56,14 @@ class ResetPass extends Component {
         formIsValid:false,
         loading: false
     }
+    
+    componentDidMount(){
+        this.mounted=true;
+    }
+
+    componentWillUnmount(){
+        this.mounted=false;
+    }
 
     submitHandler = ( event ) => {
         event.preventDefault();
@@ -67,13 +76,12 @@ class ResetPass extends Component {
         axios.patch( 'http://127.0.0.1:5050/user/resetPassword/'+this.props.email, data, {withCredentials:true} )
             .then( response => {
                 console.log(response);
-              //  this.context.login(response.data.data.user);
-                this.setState( { loading: false } );
-              //  this.props.history.push( '/post' );
+               if(this.mounted){ this.setState( { loading: false } ); }
+               this.props.history.push( '/post' );
             } )
             .catch( error => {
                 console.log(error);
-                this.setState( { loading: false } );
+               if(this.mounted){ this.setState( { loading: false } ); }
             } );
     }
 
@@ -89,11 +97,6 @@ class ResetPass extends Component {
 
         if (rules.minLength) {
             isValid = value.length >= rules.minLength && isValid
-        }
-
-        if (rules.isEmail) {
-            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-            isValid = pattern.test(value) && isValid
         }
         
         if (rules.isNumeric) {
@@ -152,17 +155,17 @@ class ResetPass extends Component {
                 <Button btnType="Success" disabled={!this.state.formIsValid}>LOGIN</Button>
             </form>
         );
-        if ( this.state.loading ) {
-            form = <Spinner />;
-        }
-        
+      
         return (
-            <div>
+            <div>{!this.state.loading?
+              <div>
+                <p>Enter the OTP sent to your registered e-mail address and Reset your Password</p>  
                 {form}
-                <button onClick={this.props.resend}>Resend OTP</button>
+                <button className="Resend" onClick={this.props.resend}>Resend OTP</button>
+             </div>:<Spinner/>}
             </div>
         );
     }
 }
 
-export default ResetPass;
+export default withErrorHandler(ResetPass,axios);

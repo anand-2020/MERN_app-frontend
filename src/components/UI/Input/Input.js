@@ -10,6 +10,9 @@ const input = ( props ) => {
     if (props.invalid && props.shouldValidate && props.touched) {
         inputClasses.push('Invalid');
     }
+    if(!props.invalid) {
+        inputClasses.push('Valid');
+    }
 
     switch ( props.elementType ) {
         case ( 'input' ):
@@ -50,12 +53,12 @@ const input = ( props ) => {
     
     let validationError = null;
    if (props.invalid && props.touched) {
-   validationError = <p>{props.elementConfig.msg}</p>;
+   validationError = <p className="Specification">{props.elementConfig.msg}</p>;
   }
 
     return (
         <div className="Input">
-            <label className="Label">{props.label}</label>
+            <label className="Label">{props.elementConfig.placeholder}</label>
             {inputElement}
             {validationError}
         </div>

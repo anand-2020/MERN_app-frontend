@@ -5,14 +5,18 @@ import './SignUp.css';
 import axios from 'axios';
 import Input from './../../components/UI/Input/Input';
 import ResetPass from './ResetPass';
+import withErrorHandler from './../../hoc/withErrorHandler';
+import AuthContext from './../../context/auth-context';
+import Aux from './../../hoc/auxilary';
 
 class ForgotPass extends Component {
-      state = { reset:false,
+    static contextType=AuthContext;
+      state = { reset:false,msg:'',
         form: {
             email: {
                 elementType: 'input',
                 elementConfig: {
-                    type: 'email',
+                    type: 'email', 
                     placeholder: 'Your E-Mail'
                 },
                 value: '',
@@ -28,22 +32,32 @@ class ForgotPass extends Component {
         loading: false
     }
 
+    
+    componentDidMount(){
+        this.mounted=true;
+    }
+
+    componentWillUnmount(){
+        this.mounted=false;
+    }
+
+
     submitHandler = ( event ) => {
         if(event) event.preventDefault();
-        this.setState( { loading: true } );
+        this.setState( { loading: true, msg:'Sending OTP ...' } );
         const formData = {};
         for (let formElementIdentifier in this.state.form) {
             formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
         }
         const data = formData;
         axios.post( 'http://127.0.0.1:5050/user/forgotPassword', data, {withCredentials:true} )
-            .then( response => {
-                console.log(response);
-                this.setState( { loading: false, reset:true } );
+            .then( (response) => {
+    
+              if(this.mounted) { this.setState( { loading: false, reset:true, msg:'' } ); }
             } )
             .catch( error => {
                 console.log(error.response.data);
-                this.setState( { loading: false, reset:true } );
+              if(this.mounted) { this.setState( { loading: false, msg:''} ); }
             } );
     }
 
@@ -122,15 +136,20 @@ class ForgotPass extends Component {
         }
         
         return (
-            <div>
+            <Aux>{this.context.authenticated?<h2>You are logged in</h2>:
+            <div className="Contact">
              { this.state.reset?<div> <ResetPass email={this.state.form.email.value} resend={this.submitHandler}/> </div>:  
             <div>
+                <h2>Reset Password</h2>
+                <p>Enter your registered E-mail address to receive the OTP</p>
+                {this.state.msg}
                 {form}
-                <Button btnType="Danger" clicked={this.navigateBack}>Back</Button>
+                {!this.state.loading?<Button btnType="Danger" clicked={this.navigateBack}>Back</Button>:null}
             </div>}
-            </div>
+            </div>}
+            </Aux>
         );
     }
 }
 
-export default ForgotPass;
+export default withErrorHandler(ForgotPass,axios);

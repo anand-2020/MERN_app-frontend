@@ -5,8 +5,10 @@ import Spinner from './../../components/UI/Spinner/Spinner';
 import './SignUp.css';
 import axios from 'axios';
 import Input from './../../components/UI/Input/Input';
+import withErrorHandler from './../../hoc/withErrorHandler';
+import Aux from './../../hoc/auxilary';
 
-class ContactData extends Component {
+class SignUp extends Component {
     static contextType=AuthContext;
     state = {
         form: {
@@ -30,7 +32,7 @@ class ContactData extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'email',
-                    placeholder: 'Your E-Mail',
+                    placeholder: 'E-Mail',
                     msg:'Enter a valid email'
                 },
                 value: '',
@@ -45,7 +47,7 @@ class ContactData extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'password',
-                    placeholder: 'Enter Password',
+                    placeholder: 'Password',
                     msg:'Password must be at least 6 character long'
                 },
                 value: '',
@@ -86,10 +88,9 @@ class ContactData extends Component {
         const data = formData;
         axios.post( 'http://127.0.0.1:5050/user/signup', data, {withCredentials:true} )
             .then( response => {
-                console.log(response);
                 this.context.login(response.data.data.user);
                 this.setState( { loading: false } );
-                this.props.history.push( '/post' );
+                this.props.history.push( '/post' ); 
             } )
             .catch( error => {
                 console.log(error.response.data);
@@ -167,15 +168,17 @@ class ContactData extends Component {
             </form>
         );
         if ( this.state.loading ) {
-            form = <Spinner />;
+            form = <Spinner />; 
         }
         return (
-            <div className="ContactData">
+            <Aux>{this.context.authenticated?<h2>You are logged in</h2>:          
+            <div className="Contact">
                 <h4>Create a new Account</h4>
                 {form}
-            </div>
+            </div>}
+            </Aux>
         );
     }
 }
 
-export default ContactData;
+export default withErrorHandler(SignUp,axios);
