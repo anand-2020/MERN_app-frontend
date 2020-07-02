@@ -3,28 +3,39 @@ import axios from 'axios';
 import './NewPost.css';
 import AuthContext from './../../context/auth-context';
 import {Redirect} from 'react-router-dom';
+import Spinner from './../UI/Spinner/Spinner';
+import withErrorHandler from './../../hoc/withErrorHandler';
 
 class NewPost extends Component {
     state = {
         content:undefined,
-        submitted:false
+        submitted:false,
+        loading:false
     }
 
     static contextType=AuthContext;
+
+    componentDidMount(){
+        this.mounted=true;
+    }
+
+    componentWillUnmount(){
+        this.mounted=false;
+    }
 
     addPostHandler = () => {
         const data = {
             content:this.state.content
         }
+        this.setState({loading:true});
         axios.post('http://127.0.0.1:5050/post', data, {withCredentials:true})
              .then(response => {
-                 console.log(response);
-                 this.props.add(response.data.data.post);
-                 this.setState({submitted: true});
+                if(this.mounted) {this.props.add(response.data.data.post);
+                 this.setState({submitted: true, loading:false}); }
              })
              .catch(error => {
                  console.log(error);
-                 window.alert('Please login to add a post');
+              if(this.mounted) { this.setState({loading:false}); } 
              });
     }
 
@@ -37,23 +48,38 @@ class NewPost extends Component {
             }} 
          />
        }
-       
+       let body =  
+                   !this.state.loading?
+                    <div>
+                    {redirect}   
+                    <h1>Add a Post</h1>
+                    <label>Content</label>
+                   <textarea rows="10" value={this.state.content} onChange={(event) => this.setState({content: event.target.value})} />
+                    <button onClick={this.addPostHandler}>Add Now</button>
+                  </div>:<Spinner/>
+        
+    if(!this.context.authenticated){ body=<div>
+                                           <h2>Access Denied!</h2> 
+                                           <p> Please login to add a post.</p>
+                                           </div> }
+        if(this.context.authenticated && !this.context.currentUser.emailIsVerified)
+             { body=<div>
+                       <h2>Access Denied!</h2> 
+                       <p>Your E-Mail is not verified. You can't add posts !</p>
+                       <p>Go to Profile section and then verify your E-Mail</p>
+                    </div>  }    
+         if(this.context.authenticated && this.context.currentUser.blacklist)
+         { body=<div>
+                   <h2>Access Denied!</h2> 
+                   <p>You are Blacklisted. You can't add posts !</p>
+                </div>  }                              
         return (
-            <div>
-             {redirect}   
-            {this.context.authenticated?
-            <div className="NewPost">
-                <h1>Add a Post</h1>
-              
-                <label>Content</label>
-                <textarea rows="4" value={this.state.content} onChange={(event) => this.setState({content: event.target.value})} />
-                
-                <button onClick={this.addPostHandler}>Add Post</button>
-            </div>:window.alert('you are not logged in!')}
-            </div>
+            <div className="Add">
+             {body}
+            </div> 
         );
     }
 }
 
 
-export default NewPost;
+export default withErrorHandler(NewPost,axios);

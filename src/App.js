@@ -3,32 +3,35 @@ import Header from './components/Header/Header';
 import Blog from './containers/Blog/Blog';
 import AuthContext from './context/auth-context';
 import axios from 'axios';
+import Spinner from './components/UI/Spinner/Spinner';
+import ErrorBoundary from './containers/ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   state = {
     isLoggedIn : false,
-    currentUser : null
+    currentUser : null,
+    loading:true
   }
-   
+ 
   isLoginHandler = () => {
     
     axios.get('http://127.0.0.1:5050/user/isLoggedIn', {withCredentials:true})
          .then(response => {
-             console.log(response);
-             this.setState({isLoggedIn:true, currentUser:response.data.data.user});
+        
+             this.setState({isLoggedIn:true, currentUser:response.data.data.user, loading:false});
          })
-         .catch(error => {
-             console.log(error);
+         .catch(error => { this.setState({loading:false});
+             
          });
 }
-
-  componentDidMount () {
-    this.isLoginHandler();
-  };
+  componentDidMount(){
+    this.isLoginHandler()
+  }
 
   loginHandler = (user) => {
-    if(!this.state.isLoggedIn) {this.setState({ isLoggedIn: true, currentUser:user }); }
-    else {this.setState({ isLoggedIn: false, currentUser:null });}
+  
+    if(user) {this.setState({ isLoggedIn: true, currentUser:user }); }
+    else  {this.setState({ isLoggedIn: false, currentUser:null });} 
   };
   
 
@@ -38,13 +41,16 @@ class App extends Component {
         authenticated:this.state.isLoggedIn,
       login:this.loginHandler,
       currentUser:this.state.currentUser}}>
-      <div className="App">
-        
+       {!this.state.loading? 
+      <div className="App">      
         <div>
          <Header/>
         </div>
+          <ErrorBoundary>
           <Blog/>
-      </div>
+          </ErrorBoundary>
+      </div>:<Spinner/>}
+      
       </AuthContext.Provider>
     );
   }

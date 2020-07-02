@@ -4,14 +4,17 @@
     box-sizing: border-box;
 }
 
-.Label {
-    font-weight: bold;
+.Label { 
+    text-align: left;
+    font-family: cursive,sans-serif;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 3px;
+
 }
 
 .InputElement {
     outline: none;
+    border-radius: 8px;
     border: 1px solid #ccc;
     background-color: white;
     font: inherit;
@@ -23,10 +26,16 @@
 
 .InputElement:focus {
     outline: none;
-    background-color: #ccc;
+    background-color: white;
 }
 
 .Invalid {
-    border: 1px solid red;
-    background-color: #FDA49A;
+    border-bottom: 2px solid red;
+}
+
+.Valid {
+    border-bottom: 2px solid rgba(27, 212, 36, 0.979);
+}
+.Specification {
+    font-size: 80%;
 }

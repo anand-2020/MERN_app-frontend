@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { Route} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Post from '../../components/Post/Post';
+import Mypost from './../../components/Post/MyPost';
 import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
 import Login from './../Auth/Login';
-import Logout from './../Auth/Logout';
 import SignUp from './../Auth/SignUp';
 import AuthContext from './../../context/auth-context';
 import Users from './../../components/Users/Users/Users';
+import ChangePass from './../Auth/ChangePass';
+import Profile from './../Auth/Profile';
 import ForgotPass from '../Auth/ForgotPass';
 
 class Blog extends Component {
@@ -22,14 +24,12 @@ class Blog extends Component {
         axios.get('http://127.0.0.1:5050/post')
              .then(response => { 
                  this.setState({posts:response.data.data.posts });
-                console.log(response); })
+             })
                 .catch(error => { console.log(error); });
 
     }
-    checkHandler = () => {
-        console.log('hi there');
-        console.log(this.state.posts);
-    }
+   
+   
 
     postDeleteHandler = (id) => {
         axios.delete('http://127.0.0.1:5050/post/'+id, {withCredentials:true})
@@ -47,43 +47,44 @@ class Blog extends Component {
     
 
     render () {
-        this.checkHandler();
-        let posts=[],myposts=[];
+        
+        let posts=[];
 
-            this.state.posts.forEach(post => {  
+            this.state.posts.forEach(post => { if(!post.blacklist) {  
             let likes=0, dislikes=0, match=false, review;
             if(post.rxn){ 
                 post.rxn.forEach(el => {
-                   if(!match && this.context.currentUser && (JSON.stringify(el.user) === JSON.stringify(this.context.currentUser._id)))
+                   if(!match && this.context.authenticated && (JSON.stringify(el.user) === JSON.stringify(this.context.currentUser._id)))
                    {match=true; review=el.review; }   
                    if(el.review === 'upVote') likes++;
                    else if(el.review === 'downVote') dislikes++;
                     else ;
                 }); 
             }
-             const doc = <Post key={post._id} author={post.author} content={post.content} id={post._id}
-                                    upVote={likes} downVote={dislikes} review={review} blacklist={post.blacklist}
-                                    delete={ this.context.authenticated && this.context.currentUser.username===post.author?() => this.postDeleteHandler(post._id):null}/>;
-             if(!post.blacklist) posts.push(doc);
-             if(this.context.authenticated && this.context.currentUser.username===post.author) myposts.push(doc);                      
-        }) ;
-        
+             const doc = <Post key={post._id} author={post.author} content={post.content} id={post._id} date={post.createdAt}
+                                    upVote={likes} downVote={dislikes} review={review} />;
+             posts.push(doc);                      
+        }}) ;
+        let myposts = <div><h2>Access Denied !</h2> <p>Please Login to get access</p></div>;
+        if(this.context.authenticated) { myposts = <Mypost posts={this.state.posts} user={this.context.currentUser} delete={this.postDeleteHandler}/> }
 
         let addpost = <NewPost add={this.addPostHandler}/>;
+
+      
         return (
-            <div className="Posts">
-              
+            <div className="Posts">                
                 <Route path="/post" exact render={() => posts } />
                 <Route path="/addpost" exact render={() => addpost} />
                 <Route path="/login" exact component={Login} />
-                <Route path="/forgotPassword" exact component={ForgotPass} />
-                <Route path="/logout" exact component={Logout} />
-                <Route path="/user/myPosts" exact render={() => myposts }/>
                 <Route path='/user/signup' exact component={SignUp}/>
+                <Route path="/forgotPassword" exact component={ForgotPass} />
+                <Route path="/user/myPosts" exact render={() => myposts }/>
                 <Route path='/user' exact component={Users}/>
+                <Route path='/user/changePassword' exact component={ChangePass}/>
+                <Route path='/user/profile' exact component={Profile}/>                  
             </div>
         );
     }
 }
 
-export default Blog;
+export default Blog ;

@@ -2,6 +2,11 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    width: 80%;
+    width: 90%;
     margin: auto;
 }
+
+/*body {
+  background-image: url('./../../asset/crp_light.jpeg');
+  background-repeat:repeat;
+}*/
