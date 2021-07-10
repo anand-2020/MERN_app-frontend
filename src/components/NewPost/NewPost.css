@@ -1,40 +1,40 @@
-.Add{
-    border: 1px solid rgb(243, 241, 241);
-    box-shadow: 0 6px 8px #ccc;
-    border-radius: 8px;
-    text-align: center;
-    width:100%;
-    max-width: 600px;
+.Add {
+  border: 1px solid rgb(243, 241, 241);
+  box-shadow: 0 6px 8px #ccc;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
 }
 
-.Add label { 
-    display:block;
-    margin: 10px auto;
-    text-align: center;
-    font-weight: bold;
+.Add label {
+  display: block;
+  margin: 10px auto;
+  text-align: center;
+  font-weight: bold;
 }
 
 .Add input,
 .Add textarea,
 .Add select {
-    display: block;
-    width: 90%;
-    border: 1px solid black;
-    border-radius: 4px;
-    outline: none;
-    font: inherit;
-    margin: auto;
-} 
+  display: block;
+  width: 90%;
+  border: 1px solid black;
+  border-radius: 4px;
+  outline: none;
+  font: inherit;
+  margin: auto;
+}
 
 .Add button {
-    border:none;
-    outline-style: none;
-    margin: 5px 0;
-    padding: 10px;
-    font: inherit;
-    border-radius: 10px;
-    background-color: transparent;
-    color: white;
-    background-color: rgba(0, 0, 255, 0.603);
-    cursor: pointer;
+  border: none;
+  outline-style: none;
+  margin: 5px 0;
+  padding: 10px;
+  font: inherit;
+  border-radius: 10px;
+  background-color: transparent;
+  color: white;
+  background-color: rgba(0, 0, 255, 0.603);
+  cursor: pointer;
 }

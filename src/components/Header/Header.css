@@ -1,76 +1,66 @@
 .Header {
-  background-color:black;
+  background-color: black;
   margin-bottom: 30px;
 }
 
-
 .Header ul {
-  display:flex;
+  display: flex;
   overflow-x: auto;
   list-style: none;
   margin: 0;
   padding: 0;
   width: 100%;
-  
 }
 
-.Header ul::-webkit-scrollbar{
+.Header ul::-webkit-scrollbar {
   width: 0px;
 }
 
-
 @media (min-width: 650px) {
   .Header ul {
-      display: inherit;
-      text-align: center;
-
+    display: inherit;
+    text-align: center;
   }
 }
-.Out{
-
-   text-decoration: none;
-   color:white;
-   font-size: 100%;
-   background-color: inherit;
-   outline-style: none;
-   border:none;
+.Out {
+  text-decoration: none;
+  color: white;
+  font-size: 100%;
+  background-color: inherit;
+  outline-style: none;
+  border: none;
 }
 
 .Out:hover,
-.Out:active
-{
+.Out:active {
   color: black;
   background-color: white;
   padding-bottom: 0px;
-  padding-top:0;
-  border-radius:6px;
+  padding-top: 0;
+  border-radius: 6px;
   font-weight: bold;
-
 }
-
 
 .Header li {
   display: inline-block;
   margin: 20px;
-  
 }
 
 .Header a {
   text-decoration: none;
-  color:white;
+  color: white;
   font-size: 100%;
 }
-
 
 .Header a.active {
   color: black;
   background-color: white;
-  padding:8px;
-  border-radius:6px;
+  padding: 8px;
+  border-radius: 6px;
   font-weight: bold;
 }
 
-.PP{
+.PP {
   height: 70px;
   background-color: black;
   background-image: linear-gradient(rgb(26, 108, 216), black);
@@ -78,15 +68,14 @@
   padding-top: 15px;
   font-size: 45px;
   font-weight: bold;
-  color:white;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: white;
+  font-family: Georgia, "Times New Roman", Times, serif;
   border-top-left-radius: 80px;
   border-top-right-radius: 80px;
 }
 
 @media (max-width: 250px) {
   .PP {
-      font-size: 30px;
+    font-size: 30px;
   }
 }
-

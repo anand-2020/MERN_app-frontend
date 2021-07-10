@@ -1,25 +1,24 @@
 .Users {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: auto;
 }
 
-.Cloj{
-    outline-style: none;
-    border: none;
-    border-radius: 6px;
-    background-color: blue;
-    font-size: 100%;
-    margin-bottom: 20px;
-    color: white;
-    padding: 8px;
-    display: block;
-
+.Cloj {
+  outline-style: none;
+  border: none;
+  border-radius: 6px;
+  background-color: blue;
+  font-size: 100%;
+  margin-bottom: 20px;
+  color: white;
+  padding: 8px;
+  display: block;
 }
 
 @media (min-width: 600px) {
-    .Cloj {
-        margin-right: 400px;
-    }
+  .Cloj {
+    margin-right: 400px;
+  }
 }

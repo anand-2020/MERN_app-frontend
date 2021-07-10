@@ -1,41 +1,40 @@
 .Input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.Label { 
-    text-align: left;
-    font-family: cursive,sans-serif;
-    display: block;
-    margin-bottom: 3px;
-
+.Label {
+  text-align: left;
+  font-family: cursive, sans-serif;
+  display: block;
+  margin-bottom: 3px;
 }
 
 .InputElement {
-    outline: none;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background-color: white;
-    font: inherit;
-    padding: 6px 10px;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
+  outline: none;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font: inherit;
+  padding: 6px 10px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .InputElement:focus {
-    outline: none;
-    background-color: white;
+  outline: none;
+  background-color: white;
 }
 
 .Invalid {
-    border-bottom: 2px solid red;
+  border-bottom: 2px solid red;
 }
 
 .Valid {
-    border-bottom: 2px solid rgba(27, 212, 36, 0.979);
+  border-bottom: 2px solid rgba(27, 212, 36, 0.979);
 }
 .Specification {
-    font-size: 80%;
+  font-size: 80%;
 }
