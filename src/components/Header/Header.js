@@ -13,7 +13,7 @@ class Header extends Component {
                this.context.login();
            })
            .catch(error => {
-               console.log(error);
+               console.log(error.response.data);
            });
   }
 

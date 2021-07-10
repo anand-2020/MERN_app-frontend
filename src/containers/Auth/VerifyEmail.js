@@ -9,7 +9,7 @@ import withErrorHandler from './../../hoc/withErrorHandler';
 
 class VerifyEmail extends Component {
     static contextType=AuthContext;
-      state = { send:false, msg:'', disable:false,
+      state = { send:false, msg:'', disable:false, 
         form:{ 
             token: {
                 elementType: 'input',
@@ -48,12 +48,11 @@ class VerifyEmail extends Component {
         }
         const data = formData;
         axios.post( 'http://127.0.0.1:5050/user/verifyEmail/', data, {withCredentials:true} )
-            .then( response => {
+            .then( response => { console.log(response);
                 if(this.mounted){
                 this.context.login(response.data.data.user);
-                this.setState( { loading: false, disable:false } );
-                this.props.history.push( '/user/profile' );}
-            } )
+                this.setState( { loading: false, disable:false , } );
+            } })
             .catch( error => {
                 console.log(error);
                 if(this.mounted){this.setState( { loading: false , disable:false} );}
@@ -137,6 +136,7 @@ class VerifyEmail extends Component {
         if ( this.state.loading ) {
             form = <Spinner />;
         }
+
         
         return (
             <div>

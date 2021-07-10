@@ -10,7 +10,7 @@ import Aux from './../../hoc/auxilary';
 
 class ChangePass extends Component {
     static contextType=AuthContext;
-      state = { 
+      state = { sumitted:false,
         form:{ 
             passwordCurrent: {
                 elementType: 'input',
@@ -80,8 +80,8 @@ class ChangePass extends Component {
             .then( response => {
                 console.log(response);
                 if(this.mounted){
-                   this.setState( { loading: false } );
-                 this.props.history.push( '/user/profile' );
+                   this.setState( { loading: false, submitted:true } );
+                 
                 }
             } )
             .catch( error => {
@@ -163,6 +163,7 @@ class ChangePass extends Component {
         if ( this.state.loading ) {
             form = <Spinner />;
         }
+        if(this.state.submitted){form=<h3>Password changed successfully</h3>}
         
         return (
             <Aux>{!this.context.authenticated?<h2>You are not logged in</h2>:

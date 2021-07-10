@@ -5,8 +5,10 @@ import './SignUp.css';
 import axios from 'axios';
 import Input from './../../components/UI/Input/Input';
 import withErrorHandler from './../../hoc/withErrorHandler';
+import AuthContext from './../../context/auth-context';
 
 class ResetPass extends Component {
+    static contextType=AuthContext;
       state = { 
         form:{ 
             token: {
@@ -77,6 +79,7 @@ class ResetPass extends Component {
             .then( response => {
                 console.log(response);
                if(this.mounted){ this.setState( { loading: false } ); }
+               this.context.login(response.data.data.user);
                this.props.history.push( '/post' );
             } )
             .catch( error => {

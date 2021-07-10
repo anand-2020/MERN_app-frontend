@@ -25,7 +25,7 @@ class Post extends Component {
              axios.post(`http://127.0.0.1:5050/post/review/${id}`, {review:rxn}, {withCredentials:true})
              .then(res => { rxn==='upVote'? this.setState((prevState) =>{return {like:true, upVote:prevState.upVote+1, load:false};}):
                                          this.setState((prevState) => { return {dislike:true, downVote:prevState.downVote+1, load:false};})
-                          })
+                         console.log(res); })
              .catch(err => {this.setState({load:false}); console.log(err.response.data);});
          }   
          else if(this.state.like)
@@ -34,14 +34,14 @@ class Post extends Component {
              if(rxn==='upVote') {
                 axios.delete(`http://127.0.0.1:5050/post/review/${id}`,{withCredentials:true})
                 .then(res => {this.setState((prevState, props) => { return{like:false, upVote:prevState.upVote - 1, load:false}; });
-                           })
+                         console.log(res);  })
                 .catch(err => {this.setState({load:false}); console.log(err.response.data);});
              }
              else{
                 axios.patch(`http://127.0.0.1:5050/post/review/${id}`, {review:rxn}, {withCredentials:true})
                 .then(res => {this.setState((prevState,props) => { return{like:false, dislike:true, load:false,
                               upVote:prevState.upVote-1, downVote:prevState.downVote+1}; });
-                        })
+                     console.log(res);   })
                 .catch(err => {this.setState({load:false}); console.log(err);});
              }
          }
@@ -50,14 +50,14 @@ class Post extends Component {
                 axios.delete(`http://127.0.0.1:5050/post/review/${id}`,{withCredentials:true})
                 .then(res => {this.setState((prevState, props) => { return{dislike:false, downVote:prevState.downVote-1,
                                                                       load:false}; });
-                    })
+                 console.log(res);   })
                 .catch(err => {this.setState({load:false}); console.log(err.response.data);});
              }
              else{
                 axios.patch(`http://127.0.0.1:5050/post/review/${id}`, {review:rxn}, {withCredentials:true})
                 .then(res => {this.setState((prevState, props) => {return {dislike:false, like:true, load:false,
                     upVote:prevState.upVote+1, downVote:prevState.downVote-1}; });
-                    })
+                  console.log(res);  })
                 .catch(err => {this.setState({load:false}); console.log(err.response.data);});
              }
          }
@@ -85,8 +85,8 @@ class Post extends Component {
          <hr/>
         <p className="Content">{this.props.content}</p>
         <div className="React">
-        <button className={this.state.like?"Like Active":"Like"} disabled={!this.context.authenticated} onClick={() => this.reactionHandler('upVote')} >upVote</button>  {this.state.upVote } <span className="Space">|</span>
-        <button className={this.state.dislike?"Dislike Active":"Dislike"} disabled={!this.context.authenticated} onClick={() => this.reactionHandler('downVote')} >downVote</button>  {this.state.downVote} 
+        <button className={this.state.like?"Like Active":"Like"} disabled={!this.context.authenticated || (this.context.authenticated && !this.context.currentUser.emailIsVerified)} onClick={() => this.reactionHandler('upVote')} >upVote</button>  {this.state.upVote } <span className="Space">|</span>
+        <button className={this.state.dislike?"Dislike Active":"Dislike"} disabled={!this.context.authenticated ||  (this.context.authenticated && !this.context.currentUser.emailIsVerified)} onClick={() => this.reactionHandler('downVote')} >downVote</button>  {this.state.downVote} 
         </div>   
       {this.props.delete? <button className="DndBButton" onClick={this.props.delete} >DELETE</button>:null}
       {this.props.blacklistAllowed? <button className="DndBButton" onClick={this.blacklistHandler}>BLACKLIST</button>:null}
